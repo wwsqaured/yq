@@ -17,7 +17,7 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    working_directory: /go/src/github.com/mikefarah/yq
     steps:
       - checkout
 
@@ -25,6 +25,6 @@ jobs:
       - run: ./scripts/devtools.sh
       - run: make local test
 
-notify:
-  webhooks:
-    - url: https://daas-staging.firebaseapp.com/api/ci-notifications/circle-ci/accountId/dashboardId/boxId?api-key=abc123-abc123-abc123
+  notify:
+    webhooks:
+      - url: https://daas-staging.firebaseapp.com/api/ci-notifications/circle-ci/accountId/dashboardId/boxId?api-key=abc123-abc123-abc123
