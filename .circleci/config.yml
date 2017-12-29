@@ -27,4 +27,4 @@ jobs:
 
 notify:
   webhooks:
-    - url: https://daas-staging.firebaseapp.com/api/ci-notifications/circle-ci/-L0q8g52nQEDoPvPyFOJ/-L0q8gMLbSX-Gpc5duRD/cicd?api-key=${DASHTIC_API_KEY}
+    - url: https://daas-staging.firebaseapp.com/api/ci-notifications/circle-ci/accountId/dashboardId/boxId?api-key=abc123-abc123-abc123
