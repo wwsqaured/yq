@@ -25,6 +25,6 @@ jobs:
       - run: ./scripts/devtools.sh
       - run: make local test
 
-  notify:
-    webhooks:
-      - url: https://daas-staging.firebaseapp.com/api/ci-notifications/circle-ci/accountId/dashboardId/boxId?api-key=abc123-abc123-abc123
+    notify:
+      webhooks:
+        - url: https://daas-staging.firebaseapp.com/api/ci-notifications/circle-ci/accountId/dashboardId/boxId?api-key=abc123-abc123-abc123
