@@ -27,7 +27,6 @@ function report_failed {
 
 trap "report_failed true" ERR
 
-fail
 ./scripts/devtools.sh
 make local test
 
