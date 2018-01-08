@@ -18,7 +18,7 @@ function report_failed {
       \"description\": \"$description\",
       \"failed\": $1
     }
-  }" http://localhost:3000/api/update-item
+  }" https://daas-staging.firebaseapp.com/api/update-item
 }
 
 trap "report_failed true" ERR
