@@ -11,7 +11,7 @@ url="$CIRCLE_BUILD_URL"
 description="By $CIRCLE_USERNAME"
 
 function report_failed {
-  curl -v \
+  curl \
     -H "X-Api-Key: $apiKey" \
     -H "Content-Type: application/json" \
     -d "{
