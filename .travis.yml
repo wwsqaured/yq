@@ -1,6 +1,8 @@
 language: go
 go:
-    - 1.9.x
+- 1.9.x
 script:
-  - scripts/devtools.sh
-  - make local build
+- scripts/travis.sh
+env:
+  global:
+    secure: JH9SgW+z6Q70MEYtGtCrxA9OJf7KcXPtTw5EXcRRTobFFaUVqDWkkOz0CsqvYHYi8LfLoQreIleQA+GokVeo/WskmjiL/QR9LmCbdj6Yuw+sD6amc9OrpQ658ETX+BGJ+3ZteS6mktc2+YykTXLfjCbKgTap0qoByZ+kh2vsX3XcpnGwJhgtPOo5eo2TYuvpHEE3OoG3G2eSnKwBKL91I/dWg6ANfnU26MxIitJfbgmgaAzmW0k+4Vlb0HBMK9tI+15sV00Vz59lhaxu9IOVZToVtwOzLLB9hswnAQL3AWrvhN+LgkBvgL0EDmBpkbfyDjxsvKAqKbkpzm+DtzifNMVY1gKSTrOoR9FvIBGBn8xHCHjCPiYzKAUBbLqjirxNR8Yjd5BmHgTFualkOVd2om7WsCg4y6wwmY/cROl/B/mQ32BO/+2QjyawEMJeauUEMTc8id93ke750D9zIYfBXR+ZseTNpVkzJuonUlBSXK0EhXdYRJlY+I5dHfgo07esLg45fCiUddHKRp/idNi6SQaHF/7/F/Zg9WZGNj7NIAMKKiQ3Kkogizq88WL+lgSd+99GD42mGIU6cdMzNTjUpyXOR0nntyiecvnJzNwN3q+Y6jCJGkhCQIgVGWEUVofHFyn1vnVX67VkK2EaDZxpBy4zqcbB2yGOo3dfegxtt8M=
