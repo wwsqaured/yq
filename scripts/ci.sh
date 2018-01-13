@@ -5,8 +5,10 @@ set -e
 # https://circleci.com/docs/1.0/environment-variables/#setting-environment-variables-for-all-commands-without-adding-them-to-git
 apiKey="$DASHTIC_API_KEY"
 
-name="YQ CircleCI" # optionally set a name
-itemId="$CIRCLE_PROJECT_REPONAME-$CIRCLE_BRANCH"
+repo="$CIRCLE_PROJECT_REPONAME"
+branch="$CIRCLE_BRANCH"
+name="$repo ($branch)" # optionally set a name
+itemId="$repo-$branch"
 url="$CIRCLE_BUILD_URL"
 description="By $CIRCLE_USERNAME"
 
@@ -27,7 +29,6 @@ function report_failed {
 
 trap "report_failed true" ERR
 
-./scripts/devtools.sh
-make local test
+fail
 
 report_failed false
