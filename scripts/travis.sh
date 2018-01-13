@@ -5,9 +5,10 @@ set -e
 # https://docs.travis-ci.com/user/environment-variables/#Defining-encrypted-variables-in-.travis.yml
 apiKey=$DASHTIC_API
 
-name="" # optionally set a name
-itemId="$TRAVIS_REPO_SLUG-$TRAVIS_BRANCH"
-url="https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_NUMBER"
+repoName="$(basename $TRAVIS_REPO_SLUG)"
+name="$repoName ($TRAVIS_BRANCH)" # optionally set a name
+itemId="$repoName-$TRAVIS_BRANCH"
+url="https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"
 description="$TRAVIS_COMMIT_MESSAGE"
 
 function report_failed {
