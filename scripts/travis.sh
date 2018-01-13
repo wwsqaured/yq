@@ -9,7 +9,7 @@ repo="$(basename $TRAVIS_REPO_SLUG)"
 branch="$TRAVIS_BRANCH"
 name="$repo ($branch)" # optionally set a name
 itemId="$repo-$branch"
-url="https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_NUMBER"
+url="https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"
 description="$TRAVIS_COMMIT_MESSAGE"
 
 function report_failed {
