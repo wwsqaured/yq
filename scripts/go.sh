@@ -5,12 +5,12 @@ set -e
 # https://docs.gocd.org/current/faq/environment_variables.html
 apiKey="$DASHTIC_API_KEY"
 
-repo="$GO_PIPELINE_NAME-$GO_JOB_NAME"
+repo="$GO_PIPELINE_NAME"
 
 name="$repo" # optionally set a name
 itemId="$repo"
 url=""
-description="$GO_STAGE_NAME"
+description="Failed at $GO_JOB_NAME in $GO_STAGE_NAME"
 
 function report_failed {
   curl \
@@ -30,9 +30,7 @@ function report_failed {
 
 trap "report_failed true" ERR
 
-env
-
-echo 'great'
+fail
 
 report_failed false
 
