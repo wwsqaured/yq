@@ -30,7 +30,7 @@ function report_failed {
 
 trap "report_failed true" ERR
 
-fail
+echo 'well done'
 
 report_failed false
 
