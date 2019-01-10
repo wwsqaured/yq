@@ -15,6 +15,7 @@ require (
 	github.com/golang/lint v0.0.0-20181217174547-8f45f776aaf1 // indirect
 	github.com/google/shlex v0.0.0-20181106134648-c34317bd91bf // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20180909121442-1003c8bd00dc // indirect
+	github.com/imdario/mergo v0.3.6
 	github.com/inconshreveable/mousetrap v1.0.0
 	github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb // indirect
 	github.com/kisielk/errcheck v1.2.0 // indirect
@@ -25,10 +26,12 @@ require (
 	github.com/mitchellh/gox v0.4.0 // indirect
 	github.com/mitchellh/iochan v1.0.0 // indirect
 	github.com/nicksnyder/go-i18n v1.10.0 // indirect
+	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/opennota/check v0.0.0-20180911053232-0c771f5545ff // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/pkg/errors v0.0.0-20180311214515-816c9085562c
 	github.com/securego/gosec v0.0.0-20181211171558-12400f9a1ca7 // indirect
+	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v0.0.0-20180601132542-3ebe029320b2
 	github.com/stripe/safesql v0.0.0-20171221195208-cddf355596fe // indirect
 	github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 // indirect
@@ -38,9 +41,6 @@ require (
 	golang.org/x/lint v0.0.0-20181217174547-8f45f776aaf1 // indirect
 	golang.org/x/tools v0.0.0-20190110015856-aa033095749b // indirect
 	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20180810215634-df19058c872c // indirect
-	gopkg.in/imdario/mergo.v0 v0.3.5
-	gopkg.in/op/go-logging.v1 v1.0.0-20160211212156-b2cb9fa56473
-	gopkg.in/spf13/cobra.v0 v0.0.3
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 	honnef.co/go/tools v0.0.0-20190109154334-5bcec433c8ea // indirect
 	mvdan.cc/interfacer v0.0.0-20180901003855-c20040233aed // indirect

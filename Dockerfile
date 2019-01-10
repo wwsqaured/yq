@@ -15,6 +15,8 @@ RUN go mod download
 
 COPY . .
 
+ENV GOPATH /go/src/
+
 RUN CGO_ENABLED=0 make local build
 
 # Choose alpine as a base image to make this useful for CI, as many

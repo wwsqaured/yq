@@ -13,8 +13,8 @@ import (
 	errors "github.com/pkg/errors"
 
 	yaml "github.com/mikefarah/yaml/v2"
-	logging "gopkg.in/op/go-logging.v1"
-	cobra "gopkg.in/spf13/cobra.v0"
+	logging "github.com/op/go-logging"
+	cobra "github.com/spf13/cobra"
 )
 
 var trimOutput = true

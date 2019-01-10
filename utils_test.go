@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	yaml "github.com/mikefarah/yaml/v2"
-	cobra "gopkg.in/spf13/cobra.v0"
+	cobra "github.com/spf13/cobra"
 )
 
 type resulter struct {
