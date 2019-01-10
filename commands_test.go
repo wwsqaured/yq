@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"gopkg.in/spf13/cobra.v0"
+	cobra "gopkg.in/spf13/cobra.v0"
 )
 
 func getRootCommand() *cobra.Command {

@@ -1,4 +1,4 @@
-FROM golang:1.9 as builder
+FROM golang:1.11 as builder
 
 WORKDIR /go/src/mikefarah/yq
 
@@ -6,11 +6,14 @@ WORKDIR /go/src/mikefarah/yq
 COPY ./scripts/devtools.sh /go/src/mikefarah/yq/scripts/devtools.sh
 RUN ./scripts/devtools.sh
 
-# cache vendor
-COPY ./vendor/vendor.json /go/src/mikefarah/yq/vendor/vendor.json
-RUN govendor sync
+ENV GO111MODULE=on
 
-COPY . /go/src/mikefarah/yq
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
+COPY . .
 
 RUN CGO_ENABLED=0 make local build
 

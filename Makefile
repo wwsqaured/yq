@@ -14,8 +14,6 @@ help:
 	@echo '    make build           Build yq binary.'
 	@echo '    make install         Install yq.'
 	@echo '    make xcompile        Build cross-compiled binaries of yq.'
-	@echo '    make snap            Build a snap package of yq.'
-	@echo '    make vendor          Install dependencies using govendor.'
 	@echo '    make format          Run code formatter.'
 	@echo '    make check           Run static code analysis (lint).'
 	@echo '    make test            Run tests on project.'
@@ -65,25 +63,15 @@ xcompile: check
 	@find build -type d -exec chmod 755 {} \; || :
 	@find build -type f -exec chmod 755 {} \; || :
 
-.PHONY: snap
-snap:
-	snapcraft
-
 .PHONY: install
 install: build
 	${DOCKRUN} go install
-
-# Each of the fetch should be an entry within vendor.json; not currently included within project
-.PHONY: vendor
-vendor: tmp/dev_image_id
-	${DOCKRUN} govendor sync
-	@chmod 664 vendor/vendor.json
 
 # ----------------------------------------------
 # develop and test
 
 .PHONY: format
-format: vendor
+format:
 	${DOCKRUN} bash ./scripts/format.sh
 
 .PHONY: check
