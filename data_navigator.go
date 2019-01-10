@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	yaml "gopkg.in/mikefarah/yaml.v2"
+	yaml "github.com/mikefarah/yaml/v2"
 )
 
 func entryInSlice(context yaml.MapSlice, key interface{}) *yaml.MapItem {
