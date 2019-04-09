@@ -1,10 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 
 	yaml "gopkg.in/yaml.v3"
 )
+
+func updateChildValue(node *yaml.Node, paths []string, value interface{}) error {
+	nodeToUpdate, err := recursePath(node, paths)
+	if err != nil {
+		return err
+	}
+	nodeToUpdate.Kind = yaml.ScalarNode
+	nodeToUpdate.Style = yaml.TaggedStyle
+	nodeToUpdate.Tag = ""
+	nodeToUpdate.Value = fmt.Sprintf("%v", value)
+	return nil
+}
 
 func recursePath(value *yaml.Node, path []string) (*yaml.Node, error) {
 	realValue := value

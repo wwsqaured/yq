@@ -70,7 +70,7 @@ func newCommandCLI() *cobra.Command {
 
 	rootCmd.AddCommand(
 		createReadCmd(),
-		// createWriteCmd(),
+		createWriteCmd(),
 		// createPrefixCmd(),
 		// createDeleteCmd(),
 		// createNewCmd(),
@@ -101,40 +101,40 @@ yq r things.yaml a.array[*].blah
 	return cmdRead
 }
 
-// func createWriteCmd() *cobra.Command {
-// 	var cmdWrite = &cobra.Command{
-// 		Use:     "write [yaml_file] [path] [value]",
-// 		Aliases: []string{"w"},
-// 		Short:   "yq w [--inplace/-i] [--script/-s script_file] [--doc/-d index] sample.yaml a.b.c newValue",
-// 		Example: `
-// yq write things.yaml a.b.c cat
-// yq write --inplace things.yaml a.b.c cat
-// yq w -i things.yaml a.b.c cat
-// yq w --script update_script.yaml things.yaml
-// yq w -i -s update_script.yaml things.yaml
-// yq w --doc 2 things.yaml a.b.d[+] foo
-// yq w -d2 things.yaml a.b.d[+] foo
-//       `,
-// 		Long: `Updates the yaml file w.r.t the given path and value.
-// Outputs to STDOUT unless the inplace flag is used, in which case the file is updated instead.
+func createWriteCmd() *cobra.Command {
+	var cmdWrite = &cobra.Command{
+		Use:     "write [yaml_file] [path] [value]",
+		Aliases: []string{"w"},
+		Short:   "yq w [--inplace/-i] [--script/-s script_file] [--doc/-d index] sample.yaml a.b.c newValue",
+		Example: `
+yq write things.yaml a.b.c cat
+yq write --inplace things.yaml a.b.c cat
+yq w -i things.yaml a.b.c cat
+yq w --script update_script.yaml things.yaml
+yq w -i -s update_script.yaml things.yaml
+yq w --doc 2 things.yaml a.b.d[+] foo
+yq w -d2 things.yaml a.b.d[+] foo
+      `,
+		Long: `Updates the yaml file w.r.t the given path and value.
+Outputs to STDOUT unless the inplace flag is used, in which case the file is updated instead.
 
-// Append value to array adds the value to the end of array.
+Append value to array adds the value to the end of array.
 
-// Update Scripts:
-// Note that you can give an update script to perform more sophisticated updated. Update script
-// format is a yaml map where the key is the path and the value is..well the value. e.g.:
-// ---
-// a.b.c: true,
-// a.b.e:
-//   - name: bob
-// `,
-// 		RunE: writeProperty,
-// 	}
-// 	cmdWrite.PersistentFlags().BoolVarP(&writeInplace, "inplace", "i", false, "update the yaml file inplace")
-// 	cmdWrite.PersistentFlags().StringVarP(&writeScript, "script", "s", "", "yaml script for updating yaml")
-// 	cmdWrite.PersistentFlags().StringVarP(&docIndex, "doc", "d", "0", "process document index number (0 based, * for all documents)")
-// 	return cmdWrite
-// }
+Update Scripts:
+Note that you can give an update script to perform more sophisticated updated. Update script
+format is a yaml map where the key is the path and the value is..well the value. e.g.:
+---
+a.b.c: true,
+a.b.e:
+  - name: bob
+`,
+		RunE: writeProperty,
+	}
+	cmdWrite.PersistentFlags().BoolVarP(&writeInplace, "inplace", "i", false, "update the yaml file inplace")
+	cmdWrite.PersistentFlags().StringVarP(&writeScript, "script", "s", "", "yaml script for updating yaml")
+	cmdWrite.PersistentFlags().StringVarP(&docIndex, "doc", "d", "0", "process document index number (0 based, * for all documents)")
+	return cmdWrite
+}
 
 // func createPrefixCmd() *cobra.Command {
 // 	var cmdWrite = &cobra.Command{
@@ -371,7 +371,7 @@ func mapYamlDecoder(updateData updateDataFn, encoder *yaml.Encoder) yamlDecoderF
 				return errors.Wrapf(errorUpdating, "Error updating document at index %v", currentIndex)
 			}
 
-			errorWriting = encoder.Encode(dataBucket)
+			errorWriting = encoder.Encode(&dataBucket)
 
 			if errorWriting != nil {
 				return errors.Wrapf(errorWriting, "Error writing document at index %v, %v", currentIndex, errorWriting)
@@ -381,31 +381,34 @@ func mapYamlDecoder(updateData updateDataFn, encoder *yaml.Encoder) yamlDecoderF
 	}
 }
 
-// func writeProperty(cmd *cobra.Command, args []string) error {
-// 	var writeCommands, writeCommandsError = readWriteCommands(args, 3, "Must provide <filename> <path_to_update> <value>")
-// 	if writeCommandsError != nil {
-// 		return writeCommandsError
-// 	}
-// 	var updateAll, docIndexInt, errorParsingDocIndex = parseDocumentIndex()
-// 	if errorParsingDocIndex != nil {
-// 		return errorParsingDocIndex
-// 	}
+func writeProperty(cmd *cobra.Command, args []string) error {
+	var writeCommands, writeCommandsError = readWriteCommands(args, 3, "Must provide <filename> <path_to_update> <value>")
+	if writeCommandsError != nil {
+		return writeCommandsError
+	}
+	var updateAll, docIndexInt, errorParsingDocIndex = parseDocumentIndex()
+	if errorParsingDocIndex != nil {
+		return errorParsingDocIndex
+	}
 
-// 	var updateData = func(dataBucket *yaml.Node, currentIndex int) error {
-// 		if updateAll || currentIndex == docIndexInt {
-// 			log.Debugf("Updating doc %v", currentIndex)
-// 			for _, entry := range writeCommands {
-// 				path := entry.Key
-// 				value := entry.Value
-// 				log.Debugf("setting %v to %v", path, value)
-// 				var paths = parsePath(path)
-// 				dataBucket = updateChildValue(dataBucket, paths, value)
-// 			}
-// 		}
-// 		return nil
-// 	}
-// 	return readAndUpdate(cmd.OutOrStdout(), args[0], updateData)
-// }
+	var updateData = func(dataBucket *yaml.Node, currentIndex int) error {
+		if updateAll || currentIndex == docIndexInt {
+			log.Debugf("Updating doc %v", currentIndex)
+			for _, entry := range writeCommands {
+				path := entry.Key
+				value := entry.Value
+				log.Debugf("setting %v to %v", path, value)
+				var paths = parsePath(path)
+				err := updateChildValue(dataBucket, paths, value)
+				if err != nil {
+					return errors.Wrapf(err, "Error processing document at index %v, writeCommand %v", currentIndex, path)
+				}
+			}
+		}
+		return nil
+	}
+	return readAndUpdate(cmd.OutOrStdout(), args[0], updateData)
+}
 
 // func prefixProperty(cmd *cobra.Command, args []string) error {
 // 	if len(args) != 2 {
@@ -537,20 +540,25 @@ func readAndUpdate(stdOut io.Writer, inputFile string, updateData updateDataFn) 
 // 	return readAndUpdate(cmd.OutOrStdout(), input, updateData)
 // }
 
-// func readWriteCommands(args []string, expectedArgs int, badArgsMessage string) (yaml.Node, error) {
-// 	var writeCommands yaml.Node
-// 	if writeScript != "" {
-// 		if err := readData(writeScript, 0, &writeCommands); err != nil {
-// 			return nil, err
-// 		}
-// 	} else if len(args) < expectedArgs {
-// 		return nil, errors.New(badArgsMessage)
-// 	} else {
-// 		writeCommands = make(yaml.Node, 1)
-// 		writeCommands[0] = yaml.MapItem{Key: args[expectedArgs-2], Value: parseValue(args[expectedArgs-1])}
-// 	}
-// 	return writeCommands, nil
-// }
+type writeCommand struct {
+	Key   string
+	Value interface{}
+}
+
+func readWriteCommands(args []string, expectedArgs int, badArgsMessage string) ([]writeCommand, error) {
+	var writeCommands []writeCommand
+	if writeScript != "" {
+		if err := readData(writeScript, 0, &writeCommands); err != nil {
+			return nil, err
+		}
+	} else if len(args) < expectedArgs {
+		return nil, errors.New(badArgsMessage)
+	} else {
+		writeCommands = make([]writeCommand, 1)
+		writeCommands[0] = writeCommand{Key: args[expectedArgs-2], Value: parseValue(args[expectedArgs-1])}
+	}
+	return writeCommands, nil
+}
 
 func parseValue(argument string) interface{} {
 	var value, err interface{}
