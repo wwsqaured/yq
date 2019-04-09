@@ -6,10 +6,10 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
-func recursePath(value yaml.Node, path []string) (yaml.Node, error) {
+func recursePath(value *yaml.Node, path []string) (*yaml.Node, error) {
 	realValue := value
 	if realValue.Kind == yaml.DocumentNode {
-		realValue = *value.Content[0]
+		realValue = value.Content[0]
 	}
 	if len(path) > 0 {
 		log.Debug("diving into %v", path[0])
@@ -18,7 +18,7 @@ func recursePath(value yaml.Node, path []string) (yaml.Node, error) {
 	return realValue, nil
 }
 
-func recurse(value yaml.Node, head string, tail []string) (yaml.Node, error) {
+func recurse(value *yaml.Node, head string, tail []string) (*yaml.Node, error) {
 	switch value.Kind {
 	case yaml.MappingNode:
 		log.Debug("its a map with %v entries", len(value.Content)/2)
@@ -29,9 +29,9 @@ func recurse(value yaml.Node, head string, tail []string) (yaml.Node, error) {
 				continue
 			}
 			mapEntryValue := value.Content[index+1]
-			return recursePath(*mapEntryValue, tail)
+			return recursePath(mapEntryValue, tail)
 		}
-		return yaml.Node{Kind: yaml.ScalarNode}, nil
+		return &yaml.Node{Kind: yaml.ScalarNode}, nil
 	case yaml.SequenceNode:
 		log.Debug("its a sequence of %v things!", len(value.Content))
 		if head == "*" {
@@ -39,25 +39,25 @@ func recurse(value yaml.Node, head string, tail []string) (yaml.Node, error) {
 			newNode.Content = make([]*yaml.Node, len(value.Content))
 
 			for index, value := range value.Content {
-				var nestedValue, err = recursePath(*value, tail)
+				var nestedValue, err = recursePath(value, tail)
 				if err != nil {
-					return yaml.Node{}, err
+					return nil, err
 				}
-				newNode.Content[index] = &nestedValue
+				newNode.Content[index] = nestedValue
 			}
-			return newNode, nil
+			return &newNode, nil
 		}
 		var index, err = strconv.ParseInt(head, 10, 64) // nolint
 		if err != nil {
-			return yaml.Node{}, err
+			return nil, err
 		}
 		if index >= int64(len(value.Content)) {
-			return yaml.Node{Kind: yaml.ScalarNode}, nil
+			return nil, nil
 		}
 
-		return recursePath(*value.Content[index], tail)
+		return recursePath(value.Content[index], tail)
 	default:
-		return value, nil
+		return nil, nil
 	}
 
 }

@@ -262,11 +262,11 @@ func readProperty(cmd *cobra.Command, args []string) error {
 			log.Debugf("processing document %v - requested index %v", currentIndex, docIndexInt)
 			if updateAll || currentIndex == docIndexInt {
 				log.Debugf("reading %v in document %v", path, currentIndex)
-				mappedDoc, errorParsing := readPath(dataBucket, path)
+				mappedDoc, errorParsing := readPath(&dataBucket, path)
 				if errorParsing != nil {
 					return errors.Wrapf(errorParsing, "Error reading path in document index %v", currentIndex)
 				}
-				mappedDocs = append(mappedDocs, &mappedDoc)
+				mappedDocs = append(mappedDocs, mappedDoc)
 			}
 			currentIndex = currentIndex + 1
 		}
@@ -290,7 +290,7 @@ func readProperty(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func readPath(dataBucket yaml.Node, path string) (yaml.Node, error) {
+func readPath(dataBucket *yaml.Node, path string) (*yaml.Node, error) {
 	var paths = parsePath(path)
 	return recursePath(dataBucket, paths)
 }
@@ -339,11 +339,11 @@ func parseDocumentIndex() (bool, int, error) {
 	return false, int(docIndexInt64), nil
 }
 
-type updateDataFn func(dataBucket interface{}, currentIndex int) (interface{}, error)
+type updateDataFn func(dataBucket *yaml.Node, currentDocumentIndex int) error
 
 func mapYamlDecoder(updateData updateDataFn, encoder *yaml.Encoder) yamlDecoderFn {
 	return func(decoder *yaml.Decoder) error {
-		var dataBucket interface{}
+		var dataBucket yaml.Node
 		var errorReading error
 		var errorWriting error
 		var errorUpdating error
@@ -366,7 +366,7 @@ func mapYamlDecoder(updateData updateDataFn, encoder *yaml.Encoder) yamlDecoderF
 			} else if errorReading != nil {
 				return errors.Wrapf(errorReading, "Error reading document at index %v, %v", currentIndex, errorReading)
 			}
-			dataBucket, errorUpdating = updateData(dataBucket, currentIndex)
+			errorUpdating = updateData(&dataBucket, currentIndex)
 			if errorUpdating != nil {
 				return errors.Wrapf(errorUpdating, "Error updating document at index %v", currentIndex)
 			}
@@ -391,18 +391,18 @@ func mapYamlDecoder(updateData updateDataFn, encoder *yaml.Encoder) yamlDecoderF
 // 		return errorParsingDocIndex
 // 	}
 
-// 	var updateData = func(dataBucket interface{}, currentIndex int) (interface{}, error) {
+// 	var updateData = func(dataBucket *yaml.Node, currentIndex int) error {
 // 		if updateAll || currentIndex == docIndexInt {
 // 			log.Debugf("Updating doc %v", currentIndex)
 // 			for _, entry := range writeCommands {
-// 				path := entry.Key.(string)
+// 				path := entry.Key
 // 				value := entry.Value
 // 				log.Debugf("setting %v to %v", path, value)
 // 				var paths = parsePath(path)
-// 				dataBucket = updatedChildValue(dataBucket, paths, value)
+// 				dataBucket = updateChildValue(dataBucket, paths, value)
 // 			}
 // 		}
-// 		return dataBucket, nil
+// 		return nil
 // 	}
 // 	return readAndUpdate(cmd.OutOrStdout(), args[0], updateData)
 // }
